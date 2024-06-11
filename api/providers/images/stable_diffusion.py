@@ -12,7 +12,7 @@ class StableDiffusion:
     async def upload_image(data: bytes) -> Optional[str]:
         """Uploads a bytes-encoded image to ImgBB"""
 
-        url = "https://api.imgbb.com/1/upload?expiration=60000&key=2a7810f7558ed7c3aa41a8e0f7286e65"
+        url = "https://api.imgbb.com/1/upload?expiration=60000&key=2a7810f7558ed7c3aa41a8e0f7286e65" # this key is dead, don't even try
         files = {"image": ("image.jpg", data, "image/jpeg")}
 
         async with httpx.AsyncClient() as client:
