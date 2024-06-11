@@ -1,6 +1,6 @@
 # Example API
 
-Simple base code for creating your own AI reverse proxy.
+The HentAI API code. Based on [example-api](https://github.com/zukijourney/example-api) (made by me, too)
 
 ## Dependencies
 
