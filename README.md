@@ -1,6 +1,6 @@
 # HentAI API
 
-The HentAI API code. Based on [example-api](https://github.com/zukijourney/example-api) (made by me, too).
+The HentAI API code. Based on [example-api](https://github.com/zukijourney/example-api) (made by me too).
 
 ## Dependencies
 
