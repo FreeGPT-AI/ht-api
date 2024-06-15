@@ -4,8 +4,8 @@ import random
 import motor.motor_asyncio as motor
 from typing import Literal, Union, Optional
 
-with open("values/secrets.yaml", "rb") as f:
-    config = yaml.load(f)["db"]
+with open("values/secrets.yaml", "r") as f:
+    config = yaml.safe_load(f)["db"]
 
 class UserManager:
     """

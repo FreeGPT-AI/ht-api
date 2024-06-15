@@ -5,7 +5,7 @@ from google.generativeai.types import AsyncGenerateContentResponse
 from collections.abc import AsyncGenerator
 from typing import Union, Any
 from .pretty_json import PrettyJSONResponse
-from ..utils import gen_system_fingerprint, gen_completion_id, handle_errors
+from ..utils import gen_system_fingerprint, gen_completion_id, handle_errors, tokenize
 
 def generate_chunk(chunk: str, model: str) -> dict[str, Union[str, list, float]]:
     """Generates a chunk of a chat response"""
@@ -48,6 +48,10 @@ async def streaming_chat_response(response: Union[str, Any], data: dict) -> Stre
 
 def normal_chat_response(response: str, body: dict) -> PrettyJSONResponse:
     """Non-streaming response generator"""
+    
+    prompt_tokens = tokenize("".join([message["content"] for message in body["messages"]]))
+    completion_tokens = tokenize(response)
+    
     return {
         "id": gen_completion_id(),
         "object": "chat.completion",
@@ -57,16 +61,13 @@ def normal_chat_response(response: str, body: dict) -> PrettyJSONResponse:
         "choices": [
             {
                 "index": 0,
-                "message": {
-                    "role": "assistant",
-                    "content": response
-                },
+                "message": {"role": "assistant", "content": response},
                 "finish_reason": "stop"
             }
         ],
         "usage": {
-            "prompt_tokens": None,
-            "completion_tokens": None,
-            "total_tokens": None
+            "prompt_tokens": prompt_tokens,
+            "completion_tokens": completion_tokens,
+            "total_tokens": prompt_tokens + completion_tokens
         }
     }

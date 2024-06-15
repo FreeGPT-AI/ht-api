@@ -2,12 +2,10 @@ from dataclasses import dataclass, field
 from typing import Union, Coroutine, Any
 from ..providers import (
     OpenAI,
-    Anthropic,
+    OpenRouter,
     MistralAI,
     Gemini,
-    LLaMA,
     Perplexity,
-    SDXL,
     StableDiffusion
 )
 
@@ -40,14 +38,12 @@ class AIModel:
         return {"object": "list", "data": [model.to_json(False) for model in AIModels.models.values()]}
 
     @classmethod
-    def get_all_models(cls, type: str = "chat.completions") -> list[str]:
-        """Returns a list of all available AI models IDs"""
-        return [model["id"] for model in cls.all_to_json()["data"] if model["type"] == type]
-    
-    @classmethod
-    def get_premium_models(cls, type: str = "chat.completions") -> list[str]:
-        """Returns a list of all available premium AI models IDs"""
-        return [model["id"] for model in cls.all_to_json()["data"] if model["type"] == type and model["premium"] == True]
+    def get_all_models(cls, type: str, premium: bool = False) -> list[str]:
+        """Returns a list of all available AI models IDs, filtered by type and premium status"""
+        if not premium:
+            return [model["id"] for model in cls.all_to_json()["data"] if model["type"] == type]
+        else:
+            return [model["id"] for model in cls.all_to_json()["data"] if model["type"] == type and model["premium"] == True]
 
     @classmethod
     def get_provider(cls, model: str) -> Coroutine[Any, Any, Any]:
@@ -96,6 +92,11 @@ class AIModels(metaclass=AIModelMeta):
         premium=True,
         providers=[OpenAI.chat_completion]
     )
+    gpt_4_0125_preview = AIModel(
+        id="gpt-4-0125-preview",
+        premium=True,
+        providers=[OpenAI.chat_completion]
+    )
     gpt_4_turbo_preview = AIModel(
         id="gpt-4-turbo-preview",
         premium=True,
@@ -121,181 +122,124 @@ class AIModels(metaclass=AIModelMeta):
         premium=True,
         providers=[OpenAI.chat_completion]
     )
-    claude_1 = AIModel(
-        id="claude-1",
-        type="chat.completions",
-        owned_by="anthropic",
-        providers=[Anthropic.chat_completion],
-        endpoint="/v1/chat/completions"
-    )
-    claude_1_2 = AIModel(
-        id="claude-1.2",
-        type="chat.completions",
-        owned_by="anthropic",
-        providers=[Anthropic.chat_completion],
-        endpoint="/v1/chat/completions"
-    )
-    claude_2 = AIModel(
-        id="claude-2",
-        type="chat.completions",
-        owned_by="anthropic",
-        providers=[Anthropic.chat_completion],
-        endpoint="/v1/chat/completions"
-    )
-    claude_2_1 = AIModel(
-        id="claude-2.1",
-        type="chat.completions",
-        owned_by="anthropic",
-        providers=[Anthropic.chat_completion],
-        endpoint="/v1/chat/completions"
-    )
     claude_3_haiku = AIModel(
         id="claude-3-haiku",
-        type="chat.completions",
         owned_by="anthropic",
-        providers=[Anthropic.chat_completion],
-        endpoint="/v1/chat/completions"
+        providers=[OpenRouter.chat_completion]
     )
     claude_3_sonnet = AIModel(
         id="claude-3-sonnet",
-        type="chat.completions",
         owned_by="anthropic",
-        providers=[Anthropic.chat_completion],
-        endpoint="/v1/chat/completions"
+        premium=True,
+        providers=[OpenRouter.chat_completion]
     )
     claude_3_opus = AIModel(
         id="claude-3-opus",
-        type="chat.completions",
         owned_by="anthropic",
         premium=True,
-        providers=[Anthropic.chat_completion],
-        endpoint="/v1/chat/completions"
-    )
-    claude_instant_1 = AIModel(
-        id="claude-instant-1",
-        type="chat.completions",
-        owned_by="anthropic",
-        providers=[Anthropic.chat_completion],
-        endpoint="/v1/chat/completions"
-    )
-    claude_instant_1_1 = AIModel(
-        id="claude-instant-1.1",
-        type="chat.completions",
-        owned_by="anthropic",
-        providers=[Anthropic.chat_completion],
-        endpoint="/v1/chat/completions"
+        providers=[OpenRouter.chat_completion]
     )
     gemini_pro = AIModel(
         id="gemini-pro",
         type="chat.completions",
         owned_by="google",
-        providers=[Gemini.chat_completion],
-        endpoint="/v1/chat/completions"
+        providers=[Gemini.chat_completion]
     )
-    gemini_1_5_pro_latest = AIModel(
-        id="gemini-1.5-pro-latest",
+    gemini_1_5_flash = AIModel(
+        id="gemini-1.5-flash",
         type="chat.completions",
         owned_by="google",
-        providers=[Gemini.chat_completion],
-        endpoint="/v1/chat/completions"
+        providers=[Gemini.chat_completion]
+    )
+    gemini_1_5_pro = AIModel(
+        id="gemini-1.5-pro",
+        type="chat.completions",
+        owned_by="google",
+        providers=[Gemini.chat_completion]
     )
     open_mistral_7b = AIModel(
         id="open-mistral-7b",
         type="chat.completions",
         owned_by="mistralai",
-        providers=[MistralAI.chat_completion],
-        endpoint="/v1/chat/completions"
+        providers=[MistralAI.chat_completion]
     )
     open_mixtral_8x7b = AIModel(
         id="open-mixtral-8x7b",
         type="chat.completions",
         owned_by="mistralai",
-        providers=[MistralAI.chat_completion],
-        endpoint="/v1/chat/completions"
+        providers=[MistralAI.chat_completion]
     )
     open_mixtral_8x22b = AIModel(
         id="open-mixtral-8x22b",
         type="chat.completions",
         owned_by="mistralai",
-        providers=[MistralAI.chat_completion],
-        endpoint="/v1/chat/completions"
+        providers=[MistralAI.chat_completion]
     )
     mistral_small = AIModel(
         id="mistral-small-latest",
         type="chat.completions",
         owned_by="mistralai",
-        providers=[MistralAI.chat_completion],
-        endpoint="/v1/chat/completions"
+        providers=[MistralAI.chat_completion]
     )
     mistral_medium = AIModel(
         id="mistral-medium-latest",
         type="chat.completions",
         owned_by="mistralai",
-        providers=[MistralAI.chat_completion],
-        endpoint="/v1/chat/completions"
+        providers=[MistralAI.chat_completion]
     )
     mistral_large = AIModel(
         id="mistral-large-latest",
         type="chat.completions",
         owned_by="mistralai",
-        providers=[MistralAI.chat_completion],
-        endpoint="/v1/chat/completions"
+        providers=[MistralAI.chat_completion]
     )
     llama_2_13b = AIModel(
         id="llama-2-13b",
         type="chat.completions",
         owned_by="meta",
-        providers=[LLaMA.chat_completion],
-        endpoint="/v1/chat/completions"
+        providers=[OpenRouter.chat_completion]
     )
     llama_2_70b = AIModel(
         id="llama-2-70b",
         type="chat.completions",
         owned_by="meta",
-        providers=[LLaMA.chat_completion],
-        endpoint="/v1/chat/completions"
+        providers=[OpenRouter.chat_completion]
     )
     llama_3_8b = AIModel(
         id="llama-3-8b",
         type="chat.completions",
         owned_by="meta",
-        providers=[LLaMA.chat_completion],
-        endpoint="/v1/chat/completions"
+        providers=[OpenRouter.chat_completion]
     )
     llama_3_70b = AIModel(
         id="llama-3-70b",
         type="chat.completions",
         owned_by="meta",
-        providers=[LLaMA.chat_completion],
-        endpoint="/v1/chat/completions"
+        providers=[OpenRouter.chat_completion]
     )
     llama_3_sonar_small_32k_chat = AIModel(
         id="llama-3-sonar-small-32k-chat",
         type="chat.completions",
         owned_by="perplexity",
-        providers=[Perplexity.chat_completion],
-        endpoint="/v1/chat/completions"
+        providers=[Perplexity.chat_completion]
     )
     llama_3_sonar_small_32k_online = AIModel(
         id="llama-3-sonar-small-32k-online",
         type="chat.completions",
         owned_by="perplexity",
-        providers=[Perplexity.chat_completion],
-        endpoint="/v1/chat/completions"
+        providers=[Perplexity.chat_completion]
     )
     llama_3_sonar_large_32k_chat = AIModel(
         id="llama-3-sonar-large-32k-chat",
         type="chat.completions",
         owned_by="perplexity",
-        providers=[Perplexity.chat_completion],
-        endpoint="/v1/chat/completions"
+        providers=[Perplexity.chat_completion]
     )
     llama_3_sonar_large_32k_online = AIModel(
         id="llama-3-sonar-large-32k-chat",
         type="chat.completions",
         owned_by="perplexity",
-        providers=[Perplexity.chat_completion],
-        endpoint="/v1/chat/completions"
+        providers=[Perplexity.chat_completion]
     )
     dall_e_3 = AIModel(
         id="dall-e-3",
@@ -308,7 +252,7 @@ class AIModels(metaclass=AIModelMeta):
         id="sdxl",
         type="images.generations",
         owned_by="stable-diffusion",
-        providers=[SDXL.image],
+        providers=[StableDiffusion.image],
         endpoint="/v1/images/generations"
     )
     stable_diffusion_3 = AIModel(

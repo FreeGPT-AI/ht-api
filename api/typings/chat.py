@@ -21,6 +21,6 @@ class ChatBody(BaseModel):
     @classmethod
     def validate_model(cls, v: str) -> str:
         """Checks if a model is valid"""
-        if v not in AIModel.get_all_models():
+        if v not in AIModel.get_all_models("chat.completions"):
             raise ValueError(f"Invalid model: {v}")
         return v

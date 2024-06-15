@@ -12,16 +12,15 @@ async def embedding(request: Request, data: EmbeddingBody = Body(...)) -> dict:
 
     key = request.headers.get("Authorization").replace("Bearer ", "", 1)
     premium_check = await UserManager.get_property(key, "premium")
-    is_premium_model = data.model in AIModel.get_premium_models("embeddings")
+    is_premium_model = data.model in AIModel.get_all_models("embeddings", premium=True)
 
     if not premium_check and is_premium_model:
         raise InvalidRequestException("This model is not available in the free tier.", status=402)
 
-    result = await (AIModel.get_provider(data.model))(data.model_dump())
+    result = await AIModel.get_provider(data.model)(data.model_dump())
 
-    if not isinstance(result, tuple) or len(result) != 2:
-        return result
+    if isinstance(result, tuple) and len(result) == 2:
+        await LogManager.log_api_request(result[1], data.model, request)
+        return result[0]
 
-    await LogManager.log_api_request(result[1], data.model, request)
-
-    return result[0]
+    return result

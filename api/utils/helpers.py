@@ -3,6 +3,7 @@ import string
 import openai
 import traceback
 import ujson
+import tiktoken
 from fastapi.responses import StreamingResponse, Response
 from typing import Union, Any, Coroutine
 
@@ -18,7 +19,7 @@ def gen_system_fingerprint() -> str:
     """Generates a system fingerprint"""
     return gen_random_string("fp_", length=10, charset=string.ascii_lowercase + string.digits)
 
-def make_response(message: str, type: str, status: int) -> Response:
+def make_error_response(message: str, type: str, status: int) -> Response:
     """Sets up the response for an error"""
     return Response(
         content=ujson.dumps(
@@ -39,10 +40,16 @@ def handle_errors(func: Coroutine[Any, Any, Any]) -> Coroutine[Any, Any, Union[R
             return await func(*args, **kwargs)
         except (TypeError, openai.APIError):
             traceback.print_exc()
-            return make_response(
+            return make_error_response(
                 message="We were unable to generate a response. Please try again later.",
                 type="invalid_response_error",
                 status=500
             )
     
     return wrapper
+
+def tokenize(text: str) -> int:
+    """Tokenizes a string using the tiktoken library"""
+    encoding = tiktoken.get_encoding("cl100k_base")
+    encoded_text = encoding.encode(text)
+    return len(encoded_text)

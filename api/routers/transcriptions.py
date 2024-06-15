@@ -11,9 +11,8 @@ async def transcriptions(request: Request, file: UploadFile = File(...)) -> dict
 
     result = await (AIModel.get_provider("whisper-1"))(await file.read())
 
-    if not isinstance(result, tuple) or len(result) != 2:
-        return result
+    if isinstance(result, tuple) and len(result) == 2:
+        await LogManager.log_api_request(result[1], "whisper-1", request)
+        return result[0]
 
-    await LogManager.log_api_request(result[1], "whisper-1", request)
-
-    return result[0]
+    return result

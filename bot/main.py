@@ -6,8 +6,8 @@ from .utils import generate_key, lookup, switcher
 
 bot = commands.Bot(intents=nextcord.Intents.default())
 
-with open("values/secrets.yaml", "rb") as f:
-    config = yaml.load(f)["bot"]
+with open("values/secrets.yaml", "r") as f:
+    config = yaml.safe_load(f)["bot"]
 
 @bot.event
 async def on_ready():

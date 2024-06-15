@@ -4,7 +4,7 @@ The HentAI API code. Based on [example-api](https://github.com/zukijourney/examp
 
 ## Dependencies
 
-- Python 3.9+
+- Python 3.11+
 - MongoDB database
 - Redis database (rate limiting)
 - A fucking brain

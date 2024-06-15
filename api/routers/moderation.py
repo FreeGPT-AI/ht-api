@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Request, Depends, Body
 from ..dependencies import auth, rate_limit
 from ..typings import ModerationBody
-from ..utils import AIModel, InvalidRequestException
-from ..database import UserManager, LogManager
+from ..utils import AIModel
+from ..database import LogManager
 
 router = APIRouter()
 
@@ -10,18 +10,10 @@ router = APIRouter()
 async def moderation(request: Request, data: ModerationBody = Body(...)) -> dict:
     """Moderation endpoint request handler"""
 
-    key = request.headers.get("Authorization").replace("Bearer ", "", 1)
-    premium_check = await UserManager.get_property(key, "premium")
-    is_premium_model = data.model in AIModel.get_premium_models("moderations")
+    result = await AIModel.get_provider(data.model)(data.model_dump())
 
-    if not premium_check and is_premium_model:
-        raise InvalidRequestException("This model is not available in the free tier.", status=402)
+    if isinstance(result, tuple) and len(result) == 2:
+        await LogManager.log_api_request(result[1], data.model, request)
+        return result[0]
 
-    result = await (AIModel.get_provider(data.model))(data.model_dump())
-
-    if not isinstance(result, tuple) or len(result) != 2:
-        return result
-
-    await LogManager.log_api_request(result[1], data.model, request)
-
-    return result[0]
+    return result
