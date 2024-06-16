@@ -6,7 +6,9 @@ from ...responses import streaming_chat_response, normal_chat_response
 from ...utils import handle_errors
 
 class OpenAI:
-    """Default OpenAI provider"""
+    """
+    Default OpenAI provider
+    """
 
     @classmethod
     async def _get_client(cls) -> tuple[str, AsyncOpenAI]:
