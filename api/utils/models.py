@@ -137,6 +137,12 @@ class AIModels(metaclass=AIModelMeta):
         premium=True,
         providers=[OpenRouter.chat_completion]
     )
+    claude_3_5_sonnet = AIModel(
+        id="claude-3.5-sonnet",
+        owned_by="anthropic",
+        premium=True,
+        providers=[OpenRouter.chat_completion]
+    )
     gemini_pro = AIModel(
         id="gemini-pro",
         type="chat.completions",
