@@ -14,6 +14,7 @@ class OpenRouter:
         "claude-3-haiku": "anthropic/claude-3-haiku:beta",
         "claude-3-sonnet": "anthropic/claude-3-sonnet:beta",
         "claude-3-opus": "anthropic/claude-3-opus:beta",
+        "claude-3.5-sonnet": "anthropic/claude-3.5-sonnet:beta",
         "llama-2-13b": "meta-llama/llama-2-13b-chat",
         "llama-2-70b": "meta-llama/llama-2-70b-chat",
         "llama-3-8b": "meta-llama/llama-3-8b-instruct",
