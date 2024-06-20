@@ -11,6 +11,5 @@ httpx
 aiohttp
 nextcord
 aiocache
-PyYAML
 tiktoken
 pillow
