@@ -10,7 +10,7 @@ router = APIRouter()
 
 @router.post("/v1/chat/completions", dependencies=[Depends(auth), Depends(rate_limit), Depends(moderation)], response_model=None)
 async def chat(request: Request, data: ChatBody = Body(...)) -> Union[StreamingResponse, Response, dict]:
-    """Handle chat completion requests"""
+    """Chat completions endpoint request handler"""
     
     key = request.headers.get("Authorization").replace("Bearer ", "", 1)
     premium = await UserManager.get_property(key, "premium")
