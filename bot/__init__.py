@@ -1,17 +1,20 @@
 import os
-import asyncio
 import nextcord
 from nextcord.ext import commands
 
-bot = commands.Bot(intents=nextcord.Intents.default(), command_prefix="penis")
+bot = commands.Bot(intents=nextcord.Intents.default())
 
-async def setup(bot: commands.Bot) -> None:
-    for file in os.listdir("src/bot/cogs"):
+@bot.event
+async def on_ready() -> None:
+    print(f"Logged in as {bot.user} (ID: {bot.user.id})")
+
+def setup(bot: commands.Bot) -> None:
+    for file in os.listdir("bot/cogs"):
         if file.endswith(".py") and not file.startswith("_"):
-            await bot.load_extension(f"src.bot.cogs.{file[:-3]}")
+            bot.load_extension(f"bot.cogs.{file[:-3]}")
             
-async def start() -> None:
-    await setup(bot)
-    await bot.start(os.environ["BOT_TOKEN"])
+def start() -> None:
+    setup(bot)
+    bot.run(os.environ["BOT_TOKEN"])
     
-asyncio.run(start())
+start()

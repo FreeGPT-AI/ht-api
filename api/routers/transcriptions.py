@@ -13,6 +13,6 @@ async def transcriptions(request: Request, file: UploadFile = File(...)) -> Unio
     result = await AIModel.get_provider("whisper-1")(await file.read())
     success, log_data = (True, result[1]) if isinstance(result, tuple) and len(result) == 2 else (result[2], result[1])
     
-    await LogManager.log_api_request("whisper-1", request, success, key=log_data, error=log_data if not success else None)
+    await LogManager.log_api_request("whisper-1", request, success, key=log_data if success else None, error=log_data if not success else None)
     
     return result[0] if success else result

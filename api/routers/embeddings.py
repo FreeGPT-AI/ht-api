@@ -21,6 +21,6 @@ async def embedding(request: Request, data: EmbeddingBody = Body(...)) -> Union[
     result = await AIModel.get_provider(data.model)(data.model_dump())
     success, log_data = (True, result[1]) if isinstance(result, tuple) and len(result) == 2 else (result[2], result[1])
     
-    await LogManager.log_api_request(data.model, request, success, key=log_data, error=log_data if not success else None)
+    await LogManager.log_api_request(data.model, request, success, key=log_data if success else None, error=log_data if not success else None)
     
     return result[0] if success else result

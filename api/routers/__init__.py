@@ -1,4 +1,3 @@
-from .admin import router as admin
 from .chat import router as chat
 from .home import router as home
 from .images import router as images
@@ -9,7 +8,6 @@ from .tts import router as tts
 from .transcriptions import router as transcriptions
 
 routers = [
-    admin,
     chat,
     home,
     images,

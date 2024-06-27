@@ -1,11 +1,11 @@
-from fastapi import Request
+from fastapi import Header
 from ..database import UserManager
 from ..exceptions import BaseException
 
-async def auth(request: Request) -> None:
+async def auth(authorization: str = Header()) -> None:
     """Authentication dependency (executes before the route handler)"""
-
-    key = request.headers.get("Authorization", "").replace("Bearer ", "", 1)
+    
+    key = authorization.replace("Bearer ", "", 1)
     
     print(f"[!] Incoming request key: {key}")
 

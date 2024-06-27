@@ -4,10 +4,7 @@ from .routers import routers
 from .utils import configure_error_handlers
 from .responses import PrettyJSONResponse
 
-app = FastAPI(
-    default_response_class=PrettyJSONResponse,
-    docs_url=None
-)
+app = FastAPI(default_response_class=PrettyJSONResponse, docs_url=None)
 
 app.add_middleware(
     CORSMiddleware,
@@ -17,5 +14,8 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
-[app.include_router(router) for router in routers]
-[app.add_exception_handler(exc, handler) for exc, handler in configure_error_handlers().items()]
+for router in routers:
+    app.include_router(router)
+
+for exc, handler in configure_error_handlers().items():
+    app.add_exception_handler(exc, handler)

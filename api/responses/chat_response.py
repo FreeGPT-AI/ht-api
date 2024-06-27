@@ -52,9 +52,11 @@ def normal_chat_response(response: str, body: dict) -> PrettyJSONResponse:
     try:
         prompt_tokens = tokenize("".join([message["content"] for message in body["messages"]]))
         completion_tokens = tokenize(response)
+        total_tokens = prompt_tokens + completion_tokens
     except:
         prompt_tokens = 0
         completion_tokens = 0
+        total_tokens = 0
     
     return {
         "id": gen_completion_id(),
@@ -72,6 +74,6 @@ def normal_chat_response(response: str, body: dict) -> PrettyJSONResponse:
         "usage": {
             "prompt_tokens": prompt_tokens,
             "completion_tokens": completion_tokens,
-            "total_tokens": prompt_tokens + completion_tokens
+            "total_tokens": total_tokens
         }
     }
